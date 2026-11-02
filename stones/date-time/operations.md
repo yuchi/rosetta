@@ -10,6 +10,8 @@ Choices, pinned versions, and per-column rules are in [alternatives.md](alternat
 
 **Structure:** `## domain` › `### topic` › numbered operation. An operation's ID is
 its position, e.g. `8.1.3` = Arithmetic › Calendar units › Add months.
+Domains 1–21 list single operations. Domain 22 lists use cases: real tasks that
+combine several operations. Each use case names the IDs of the operations it uses.
 
 **Tags** (after an operation):
 
@@ -678,7 +680,7 @@ A short note after an operation names the trap or detail its entry must show.
 
 ---
 
-## 21. Recipes and modeling
+## 21. Modeling
 
 ### 21.1 Choosing a type
 1. Log entry / `created_at` → Instant
@@ -691,25 +693,180 @@ A short note after an operation names the trap or detail its entry must show.
 8. Timer length → Duration
 9. Flight departure and arrival in two zones → two ZonedDateTimes
 
-### 21.2 Everyday tasks
-1. Age in completed years
-2. Countdown ("3d 4h 12m")
-3. Next birthday, including Feb 29
-4. Nights between check-in and check-out
-5. Is a store open now, in the store's zone
-6. Is a card expired
-7. Monthly renewal date starting Jan 31
-8. Trial ends in N days, at end of day in the user's zone
-9. `setTimeout` until a given instant
-10. Timesheet total
-11. Greeting by time of day (morning / afternoon / evening)
+---
 
-### 21.3 Calendar and scheduling UI
-1. Month grid (6 × 7, locale week start)
-2. Week view with hours (23/25-hour days)
-3. Group items by day / week / month in the user's zone
-4. Meeting slot across several zones (overlapping working hours)
-5. Recurrence rules (every second Tuesday, last business day) `external`. RRULE
-6. Daily event that stays at 09:00 local through DST
-7. Next run of a cron expression `external`
-8. Time-series buckets (5-minute buckets in UTC)
+## 22. Use cases
+
+### 22.1 Calendar widgets and date pickers
+1. All dates of a month. Loop from day 1 to `daysInMonth`\
+   Uses: 1.2.7, 10.2.4, 5.5.1, 12.4.1
+2. Month grid (6 × 7) padded with days from the previous and next month. The locale's first day of week\
+   Uses: 10.2.4, 10.3.3, 10.2.3, 18.2.1, 5.1.6, 12.4.1
+3. Week-number column. ISO vs locale numbering\
+   Uses: 5.1.8, 5.1.9, 5.1.10, 18.2.4
+4. Highlight today. "Today" in the user's zone, not UTC\
+   Uses: 1.2.2, 1.2.6, 11.3.1, 11.2.1
+5. Previous / next month buttons. Step a year-month, not a Jan 31 date\
+   Uses: 7.1.8, 8.1.3, 7.1.9
+6. Disabled dates (before min, after max, weekends, holidays)\
+   Uses: 11.1.1, 12.2.1, 11.4.1, 8.5.5
+7. Range selection with hover preview and night count\
+   Uses: 11.1.1, 12.2.1, 9.1.3, 17.1.13
+8. Year view (12 mini-months) and decade picker\
+   Uses: 12.4.2, 10.2.6, 10.2.7, 5.1.14
+9. Week view with hourly rows. 23- and 25-hour days\
+   Uses: 10.2.3, 12.4.3, 5.5.6, 14.3.4
+10. Day view with 30-minute slots\
+    Uses: 10.2.2, 12.4.3, 10.1.2, 17.1.2
+11. Header labels: weekday names in locale order, a "March 2024" title\
+    Uses: 17.1.16, 18.2.1, 17.1.4, 17.1.15
+12. Agenda view grouped by day with "Today" / "Tomorrow" headings\
+    Uses: 7.1.3, 11.2.6, 17.2.3, 17.2.4
+
+### 22.2 Scheduling and booking
+1. Bookable slots for a day from opening hours, slot length and buffer, in the business's zone\
+   Uses: 21.1.5, 7.1.5, 12.4.5, 8.2.1
+2. Remove booked slots. Interval difference\
+   Uses: 12.2.2, 12.3.1, 12.3.3
+3. Show availability in the viewer's zone\
+   Uses: 1.3.1, 13.1.3, 17.1.6
+4. Find a meeting time across zones. Overlapping working hours\
+   Uses: 13.1.2, 12.3.2, 12.4.3, 13.1.8
+5. Weekly event that stays at 09:00 local through DST\
+   Uses: 19.2.2, 8.1.2, 8.3.1, 14.1.1
+6. Monthly event "on the 31st". Add N months to the first date, not 1 month to the previous one\
+   Uses: 8.1.3, 8.1.6, 2.3.1
+7. "Second Tuesday of every month"\
+   Uses: 10.4.4, 12.4.2, 5.1.5
+8. Expand recurring events inside the visible range `external`. RRULE\
+   Uses: 12.2.1, 12.4.2, 19.2.2
+9. Hotel stay: nights, check-in 15:00 / check-out 11:00 in the hotel's zone\
+   Uses: 21.1.4, 9.1.3, 7.1.5, 17.1.13
+10. Flight: departure and arrival zones, duration, "+1 day" marker\
+    Uses: 21.1.9, 9.3.1, 9.2.5, 9.2.1
+11. Reminders: "15 minutes before", "the day before at 18:00"\
+    Uses: 8.2.1, 8.1.1, 6.2.3, 8.3.3
+
+### 22.3 Timestamps in feeds and messages
+1. "3 minutes ago", switching to an absolute date after a week\
+   Uses: 17.2.1, 17.2.2, 9.3.1, 17.1.3
+2. Refreshing relative labels. Work out when the label next changes\
+   Uses: 17.2.2, 9.1.2, 10.1.3
+3. Day separators in a chat ("Today", "Yesterday", "Monday", "March 3")\
+   Uses: 11.2.4, 11.3.1, 17.2.4, 17.1.15
+4. Server UTC timestamp shown in the user's zone and locale\
+   Uses: 3.1.3, 7.1.1, 1.3.1, 17.1.3
+5. Full date-time tooltip on a relative label\
+   Uses: 17.1.3, 17.1.7, 19.3.7
+6. "Last seen" and "edited" markers\
+   Uses: 11.1.1, 9.1.2, 17.2.1
+
+### 22.4 Business and billing
+1. Monthly renewal starting Jan 31\
+   Uses: 8.1.3, 8.1.6, 9.1.5
+2. Trial ending after N days, at end of day in the user's zone\
+   Uses: 8.1.1, 10.3.1, 10.2.2, 13.1.2
+3. Invoice due dates: net 30, end of month + 30, N business days\
+   Uses: 8.1.1, 10.3.3, 8.5.1, 8.5.5
+4. SLA deadline that counts only business hours and skips holidays\
+   Uses: 8.5.4, 8.5.5, 12.3.2, 15.3.4
+5. Proration: share of the billing period used\
+   Uses: 9.1.3, 9.1.8, 12.1.3
+6. Fiscal years and quarters starting in April or July\
+   Uses: 5.1.12, 10.2.5, 8.1.3, 6.1.1
+7. Payroll dates: every other Friday, last business day of the month\
+   Uses: 8.1.2, 10.4.5, 10.3.3, 8.5.4
+8. Card valid through the end of its expiry month\
+   Uses: 21.1.6, 3.3.1, 10.3.3, 11.1.1
+9. Timesheet totals, overnight shifts, overtime\
+   Uses: 9.3.5, 15.3.4, 15.4.1, 15.5.1
+10. Interest day-count conventions (actual/365, 30/360) `recipe`\
+    Uses: 9.1.3, 5.5.2, 5.1.4
+
+### 22.5 Reporting and analytics
+1. Group records by day / week / month in the user's zone\
+   Uses: 7.1.1, 7.1.3, 10.2.3, 7.1.8, 11.2.6
+2. Fill empty days in a time series\
+   Uses: 12.4.1, 11.2.6
+3. Fixed-size buckets (5 minutes, UTC)\
+   Uses: 10.1.2, 10.1.3, 5.4.1
+4. Filter presets: "Last 7 days", "This month", "Last quarter", year to date\
+   Uses: 1.2.6, 8.1.1, 10.2.4, 10.2.5, 10.2.6, 12.1.1
+5. Same period last year / previous-period comparisons\
+   Uses: 8.1.5, 9.1.3, 12.1.2
+6. Rolling windows (trailing 7 / 30 days)\
+   Uses: 8.1.1, 12.2.1, 11.3.4
+7. Cohorts by signup week\
+   Uses: 10.2.3, 5.1.8, 5.1.9, 9.1.4
+8. Which zone defines "a day" for daily metrics\
+   Uses: 1.2.6, 10.2.2, 5.5.6, 13.1.1
+9. Chart axis ticks at round dates (month starts, Mondays)\
+   Uses: 12.4.2, 10.2.4, 10.2.3, 17.1.4
+10. Average and percentile durations (response times)\
+    Uses: 9.1.1, 15.3.4, 15.3.3, 15.5.3, 15.6.2
+
+### 22.6 Forms and input validation
+1. Date of birth: at least 18 years old\
+   Uses: 19.3.1, 9.1.6, 8.1.5, 11.1.1
+2. Date range: end after start, maximum span\
+   Uses: 11.1.1, 12.1.4, 9.1.3
+3. Not in the past / at least 24 hours ahead\
+   Uses: 1.1.4, 11.3.2, 8.2.1
+4. Card expiry `MM/YY` → year-month\
+   Uses: 3.3.1, 3.3.4, 2.1.4
+5. Time field with 12- or 24-hour display by locale\
+   Uses: 19.3.4, 17.1.8, 3.3.3
+6. Normalize dates typed in several formats\
+   Uses: 3.3.7, 3.3.6, 3.4.2, 4.1.2
+7. Time zone picker: zones with their current offset, sorted and grouped\
+   Uses: 13.2.1, 13.2.5, 13.2.4, 5.3.2
+
+### 22.7 Countdowns, timers, and clocks
+1. Live countdown to a date ("3d 4h 12m 5s")\
+   Uses: 9.3.1, 9.3.2, 15.4.4, 15.6.2
+2. Stopwatch / elapsed time. Monotonic clock\
+   Uses: 1.3.2, 15.1.3, 15.6.3
+3. Session timeout warning\
+   Uses: 1.1.4, 8.2.1, 9.1.2
+4. World clock for several cities\
+   Uses: 13.1.8, 13.2.4, 17.1.7
+5. `setTimeout` until an instant. Delays over ~24.8 days overflow and fire immediately\
+   Uses: 1.1.4, 9.1.1, 15.2.2
+6. Token expiry check (JWT `exp` in Unix seconds)\
+   Uses: 2.2.2, 1.1.3, 11.3.2
+7. "Try again in 5 minutes" from a rate-limit reset header\
+   Uses: 3.2.2, 3.2.4, 9.1.2, 17.2.1
+
+### 22.8 Personal and everyday dates
+1. Age in completed years\
+   Uses: 1.2.2, 9.1.6, 9.2.3
+2. Next birthday and days until it, including Feb 29\
+   Uses: 21.1.3, 7.1.10, 10.4.3, 9.1.3
+3. Time together ("2 years, 3 months, 5 days")\
+   Uses: 9.3.1, 15.6.2
+4. Holidays: fixed (Dec 25), floating (4th Thursday of November), computed (Easter) `recipe`\
+   Uses: 2.1.5, 7.1.10, 10.4.4, 2.1.1
+5. Is a store open now, including hours past midnight\
+   Uses: 21.1.5, 1.2.5, 5.1.5, 11.1.1, 8.2.4
+6. Greeting by time of day\
+   Uses: 1.2.3, 5.2.1, 17.1.10
+7. Sprint or course week number from a start date\
+   Uses: 9.1.3, 9.1.4, 10.2.3
+
+### 22.9 Systems and infrastructure
+1. Log timestamps (UTC ISO, sub-millisecond)\
+   Uses: 1.1.4, 16.1.1, 16.1.6, 20.3.2
+2. Duration between two log lines\
+   Uses: 3.1.3, 9.1.1, 15.6.1
+3. HTTP caching: `Expires`, `Last-Modified`, `max-age`\
+   Uses: 3.2.2, 16.2.2, 8.2.1
+4. Cookie expiry\
+   Uses: 8.1.1, 16.2.2, 19.3.8
+5. Retry with exponential backoff: next attempt time\
+   Uses: 1.1.4, 8.2.1, 15.3.3
+6. Date-partitioned paths and keys (`logs/2024/03/15/`)\
+   Uses: 7.1.1, 17.3.2, 19.2.6
+7. Next run of a cron expression `external`\
+   Uses: 10.4.9, 13.1.2, 14.3.4
+8. Old `DATETIME` columns without a zone → Temporal types\
+   Uses: 3.1.12, 7.1.4, 19.2.1, 19.2.2
